@@ -30,8 +30,6 @@ public class FlashlightAdvanced : MonoBehaviour
 
     }
 
-
-
     void Update()
     {
         text.text = lifetime.ToString("0") + "%";
@@ -86,8 +84,6 @@ public class FlashlightAdvanced : MonoBehaviour
         {
             batteries = 0;
         }
-
-
 
     }
 

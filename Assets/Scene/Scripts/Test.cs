@@ -2,31 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
 
 public class Test : MonoBehaviour
 {
-    private bool isOpen = false;
+    [SerializeField] private int keys = 0; // Счетчик ключей
+    public TMP_Text keyText; // Текстовое поле для отображения количества ключей
+
+    private bool isDoorOpen = false; // Состояние двери (открыта/закрыта)
+
+    public GameObject pickUpText;
+    public GameObject noKeyText;
+
     private Quaternion closedRotation;
     private Quaternion openRotation;
-    public float openAngle = 90f; // угол открытия
-    public float openSpeed = 2f; // скорость открытия
-    private Transform doorPivot; // ссылка на родительский объект (пустышку)
-    private float openTimer = 0f;
-    public float openDuration = 5f; // время, на которое дверь остается открытой
-    public float interactionDistance = 3f; // максимальное расстояние для взаимодействия
-    private Transform player; // ссылка на игрока
+    public float openAngle = 90f;
+    public float openSpeed = 2f;
+    private Transform doorPivot;
+    private Transform player;
+    public float interactionDistance = 3f;
 
-    // Start is called before the first frame update
     void Awake()
     {
-        doorPivot = transform.parent; // получаем родительский объект
+        doorPivot = transform.parent;
         closedRotation = doorPivot.rotation;
         openRotation = Quaternion.Euler(doorPivot.eulerAngles + new Vector3(0, openAngle, 0));
     }
 
     void Start()
     {
-        player = Camera.main.transform; // получаем ссылку на игрока (камеру)
+        player = Camera.main.transform;
+        UpdateKeyText();
+        pickUpText.SetActive(false);
+        noKeyText.SetActive(false);
+    }
+
+    // Метод для увеличения счетчика ключей
+    public void AddKey()
+    {
+        keys++;
+        UpdateKeyText();
     }
 
     void OnMouseOver()
@@ -34,29 +49,54 @@ public class Test : MonoBehaviour
         float distance = Vector3.Distance(transform.position, player.position);
         if (distance <= interactionDistance)
         {
-            isOpen = true;
-            openTimer = openDuration; // сбрасываем таймер при наведении
-        }
-    }
-
-    void OnMouseExit()
-    {
-        // Не закрываем дверь сразу, ждем таймер
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (isOpen)
-        {
-            openTimer -= Time.deltaTime;
-            if (openTimer <= 0)
+            pickUpText.SetActive(true);
+            if(keys == 0)
             {
-                isOpen = false;
+                noKeyText.SetActive(true);
             }
         }
 
-        Quaternion targetRotation = isOpen ? openRotation : closedRotation;
+    }
+
+    private void OnMouseExit()
+    {
+        float distance = Vector3.Distance(transform.position, player.position);
+        if (distance <= interactionDistance)
+        {
+            pickUpText.SetActive(false);
+            noKeyText.SetActive(false);
+        }
+    }
+
+    void Update()
+    {
+        // Проверяем нажатие мыши (например, левая кнопка)
+        if (Input.GetButtonDown("Interact") )
+        {
+            
+            float distance = Vector3.Distance(transform.position, player.position);
+
+            if (distance <= interactionDistance && keys > 0 && !isDoorOpen)
+            {
+                // Открываем дверь и тратим ключ
+                isDoorOpen = true;
+                keys--;
+                UpdateKeyText();
+                Debug.Log("Дверь открыта! Осталось ключей: " + keys);
+            }
+        }
+
+        // Вращаем дверь, если она открыта
+        Quaternion targetRotation = isDoorOpen ? openRotation : closedRotation;
         doorPivot.rotation = Quaternion.Lerp(doorPivot.rotation, targetRotation, Time.deltaTime * openSpeed);
+    }
+
+    // Метод для обновления текстового поля
+    private void UpdateKeyText()
+    {
+        if (keyText != null)
+        {
+            keyText.text = keys.ToString();
+        }
     }
 }

@@ -37,9 +37,6 @@ public class BatteryPickUp : MonoBehaviour
         }
     }
 
-
-
-
     void Update()
     {
         if(Input.GetButtonDown("Interact") && inReach)
