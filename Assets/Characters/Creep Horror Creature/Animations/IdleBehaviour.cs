@@ -5,7 +5,7 @@ public class IdleBehaviour : StateMachineBehaviour
     private float timer;
     
     Transform player;
-    private float chaseRange = 10;
+    private float chaseRange = 20;
     
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
