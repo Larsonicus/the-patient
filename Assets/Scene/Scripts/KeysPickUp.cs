@@ -39,11 +39,7 @@ public class KeysPickUp : MonoBehaviour
         if (Input.GetButtonDown("Interact") && inReach)
         {
             pickUpSound.Play();
-            Test doorScript = FindObjectOfType<Test>(); // Поиск скрипта двери
-            if (doorScript != null)
-            {
-                doorScript.AddKey(); // Увеличение счетчика ключей
-            }
+            PlayerInventory.Instance.AddKey();
             inReach = false;
             pickUpText.SetActive(false);
             Destroy(gameObject); // Уничтожение ключа

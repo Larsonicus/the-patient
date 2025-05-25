@@ -1,15 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using TMPro;
 
 public class Test : MonoBehaviour
 {
-    [SerializeField] private int keys = 0; // Счетчик ключей
-    public TMP_Text keyText; // Текстовое поле для отображения количества ключей
-
-    private bool isDoorOpen = false; // Состояние двери (открыта/закрыта)
+    private bool isDoorOpen = false;
 
     public GameObject pickUpText;
     public GameObject noKeyText;
@@ -32,16 +26,8 @@ public class Test : MonoBehaviour
     void Start()
     {
         player = Camera.main.transform;
-        UpdateKeyText();
         pickUpText.SetActive(false);
         noKeyText.SetActive(false);
-    }
-
-    // Метод для увеличения счетчика ключей
-    public void AddKey()
-    {
-        keys++;
-        UpdateKeyText();
     }
 
     void OnMouseOver()
@@ -49,54 +35,39 @@ public class Test : MonoBehaviour
         float distance = Vector3.Distance(transform.position, player.position);
         if (distance <= interactionDistance)
         {
-            pickUpText.SetActive(true);
-            if(keys == 0)
+            if (!isDoorOpen)
             {
-                noKeyText.SetActive(true);
+                pickUpText.SetActive(true);
+                if (PlayerInventory.Instance.keys == 0)
+                {
+                    noKeyText.SetActive(true);
+                }
             }
-        }
 
+        }
     }
 
-    private void OnMouseExit()
+    void OnMouseExit()
     {
-        float distance = Vector3.Distance(transform.position, player.position);
-        if (distance <= interactionDistance)
-        {
-            pickUpText.SetActive(false);
-            noKeyText.SetActive(false);
-        }
+        pickUpText.SetActive(false);
+        noKeyText.SetActive(false);
     }
 
     void Update()
     {
-        // Проверяем нажатие мыши (например, левая кнопка)
-        if (Input.GetButtonDown("Interact") )
+        if (Input.GetButtonDown("Interact"))
         {
-            
             float distance = Vector3.Distance(transform.position, player.position);
-
-            if (distance <= interactionDistance && keys > 0 && !isDoorOpen)
+            if (distance <= interactionDistance && PlayerInventory.Instance.keys > 0 && !isDoorOpen)
             {
-                // Открываем дверь и тратим ключ
                 isDoorOpen = true;
-                keys--;
-                UpdateKeyText();
-                Debug.Log("Дверь открыта! Осталось ключей: " + keys);
+                PlayerInventory.Instance.keys--;
+                PlayerInventory.Instance.UpdateKeyText();
+                Debug.Log("Дверь открыта! Осталось ключей: " + PlayerInventory.Instance.keys);
             }
         }
 
-        // Вращаем дверь, если она открыта
         Quaternion targetRotation = isDoorOpen ? openRotation : closedRotation;
         doorPivot.rotation = Quaternion.Lerp(doorPivot.rotation, targetRotation, Time.deltaTime * openSpeed);
-    }
-
-    // Метод для обновления текстового поля
-    private void UpdateKeyText()
-    {
-        if (keyText != null)
-        {
-            keyText.text = keys.ToString();
-        }
     }
 }
