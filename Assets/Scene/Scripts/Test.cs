@@ -21,11 +21,16 @@ public class Test : MonoBehaviour
         doorPivot = transform.parent;
         closedRotation = doorPivot.rotation;
         openRotation = Quaternion.Euler(doorPivot.eulerAngles + new Vector3(0, openAngle, 0));
+
+        player = Camera.main?.transform;
+        if (player == null)
+        {
+            Debug.LogError("Main Camera не найдена!");
+        }
     }
 
-    void Start()
+        void Start()
     {
-        player = Camera.main.transform;
         pickUpText.SetActive(false);
         noKeyText.SetActive(false);
     }
