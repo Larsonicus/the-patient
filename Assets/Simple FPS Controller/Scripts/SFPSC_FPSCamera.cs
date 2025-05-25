@@ -40,6 +40,8 @@ public class SFPSC_FPSCamera : MonoBehaviour
     public float maxDownAngle = -80;
     public Transform player;
     public Transform CameraPosition;
+
+    private bool locked = false;
     
     private void Awake()
     {
@@ -55,6 +57,11 @@ public class SFPSC_FPSCamera : MonoBehaviour
     public float rotZ = 0.0f;
     private void Update()
     {
+        if (locked)
+        {
+            return;
+        }
+
         // Mouse input
         mouseX = Input.GetAxis("Mouse X") * sensitivity;
         mouseY = Input.GetAxis("Mouse Y") * sensitivity;
@@ -84,5 +91,10 @@ public class SFPSC_FPSCamera : MonoBehaviour
             yield return wfeof;
         }
         rotZ = 0.0f;
+    }
+
+    public void LockCamera()
+    {
+        locked = true;
     }
 }
