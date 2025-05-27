@@ -9,13 +9,11 @@ public class NewBehaviourScript : MonoBehaviour
     [SerializeField] private float _rotateSpeed;
 
     private float _timer;
-    // Start is called before the first frame update
     void Start()
     {
         Debug.Log("Start");
     }
 
-    // Update is called once per frame
     void Update()
     {
 

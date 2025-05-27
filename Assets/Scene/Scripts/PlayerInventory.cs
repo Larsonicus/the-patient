@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class PlayerInventory : MonoBehaviour
@@ -14,6 +15,7 @@ public class PlayerInventory : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -23,6 +25,13 @@ public class PlayerInventory : MonoBehaviour
 
     private void Start()
     {
+        UpdateKeyText();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        keyText = GameObject.Find("Keys")?.GetComponent<TMP_Text>();
+
         UpdateKeyText();
     }
 

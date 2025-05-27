@@ -42,7 +42,7 @@ public class KeysPickUp : MonoBehaviour
             PlayerInventory.Instance.AddKey();
             inReach = false;
             pickUpText.SetActive(false);
-            Destroy(gameObject); // Уничтожение ключа
+            Destroy(gameObject); 
         }
     }
 }
